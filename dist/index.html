@@ -13,10 +13,9 @@
   <body>
     <h2>Select API Documentation</h2>
     <select id="api-selector">
-      <option value="docs/119reporting-api.yaml">119 Reporting API</option>
-      <option value="docs/translation-api.yaml">Translation API</option>
-      <option value="docs/recommender-api.yaml">Recommender API</option>
-      <!-- <option value="docs/backend-api.yaml">Backend API</option> -->
+      <option value="119reporting-api.yaml">119 Reporting API</option>
+      <option value="translation-api.yaml">Translation API</option>
+      <option value="recommender-api.yaml">Recommender API</option>
     </select>
 
     <div id="swagger-ui"></div>
@@ -25,8 +24,7 @@
     <script>
       function loadSwaggerUI(apiUrl) {
         const ui = SwaggerUIBundle({
-          url:
-            "https://graduationproject-2024.github.io/swagger-docs/" + apiUrl,
+          url: apiUrl, // ✅ `/docs/`가 루트이므로, 바로 파일명 지정
           dom_id: "#swagger-ui",
         });
       }
@@ -37,9 +35,9 @@
           loadSwaggerUI(this.value);
         });
 
-      // 기본 API 문서 로드
+      // 기본 API 문서 로드 (119 Reporting API)
       window.onload = function () {
-        loadSwaggerUI("docs/translation-api.yaml");
+        loadSwaggerUI("translation-api.yaml");
       };
     </script>
   </body>

@@ -1,0 +1,148 @@
+openapi: 3.0.0
+info:
+  title: 119 Reporting API
+  description: API for emergency text and web-based reporting to 119 services.
+  version: 1.0.0
+servers:
+  - url: https://your-api-server.com
+    description: Production server
+
+paths:
+  /gen_119_pw:
+    get:
+      summary: Generate a 119 reporting password
+      description: Creates a unique password for 119 reporting.
+      responses:
+        "200":
+          description: Generated password successfully.
+        "500":
+          description: Internal server error.
+
+  /send_messages:
+    post:
+      summary: Send emergency SMS
+      description: Sends an emergency SMS report with optional audio transcription.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                phone_number:
+                  type: string
+                text:
+                  type: string
+                audio:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: SMS sent successfully.
+        "400":
+          description: Missing required fields.
+
+  /transcribe:
+    post:
+      summary: Transcribe and translate audio
+      description: Converts an uploaded audio file to text and translates it.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                audio:
+                  type: string
+                  format: binary
+                target_language:
+                  type: string
+                  default: "ko"
+      responses:
+        "200":
+          description: Transcription and translation completed.
+        "400":
+          description: Missing audio file.
+
+  /fill_form:
+    post:
+      summary: Web-based emergency reporting
+      description: Fills and submits a 119 web form using automation.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                number:
+                  type: string
+                incident_location:
+                  type: string
+                emergency_type:
+                  type: string
+                title:
+                  type: string
+                content:
+                  type: string
+                audio:
+                  type: string
+                  format: binary
+                file_1:
+                  type: string
+                  format: binary
+                file_2:
+                  type: string
+                  format: binary
+                file_3:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Web form submitted successfully.
+        "400":
+          description: Missing required fields.
+
+  /translate:
+    post:
+      summary: Translate text
+      description: Translates a given text to the specified language.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                target_language:
+                  type: string
+                  default: "ko"
+      responses:
+        "200":
+          description: Translation completed.
+        "400":
+          description: Missing required fields.
+
+  /tts:
+    post:
+      summary: Convert text to speech (TTS)
+      description: Generates an audio file from a given text.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+      responses:
+        "200":
+          description: TTS conversion completed successfully.
+        "400":
+          description: Missing required text.

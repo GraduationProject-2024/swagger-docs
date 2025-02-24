@@ -1,0 +1,173 @@
+openapi: 3.0.0
+info:
+  title: Recommender API
+  description: API for recommending hospitals, pharmacies, and emergency rooms based on user data and location.
+  version: 1.0.0
+servers:
+  - url: https://your-api-server.com
+    description: Production server
+
+paths:
+  /recommend_hospital:
+    post:
+      summary: Recommend a hospital
+      description: Provides hospital recommendations based on user health info and location.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                basic_info:
+                  type: object
+                  description: Basic user information including address.
+                health_info:
+                  type: object
+                  description: User's health information.
+                department:
+                  type: string
+                  default: "내과"
+                suspected_disease:
+                  type: string
+                  nullable: true
+                secondary_hospital:
+                  type: boolean
+                tertiary_hospital:
+                  type: boolean
+                lat:
+                  type: number
+                  format: float
+                lon:
+                  type: number
+                  format: float
+      responses:
+        "200":
+          description: List of recommended hospitals.
+        "400":
+          description: Invalid request.
+        "404":
+          description: No hospitals found.
+
+  /recommend_pharmacy:
+    post:
+      summary: Recommend a pharmacy
+      description: Provides pharmacy recommendations based on user location.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                basic_info:
+                  type: object
+                lat:
+                  type: number
+                  format: float
+                lon:
+                  type: number
+                  format: float
+      responses:
+        "200":
+          description: List of recommended pharmacies.
+        "400":
+          description: Invalid request.
+        "404":
+          description: No pharmacies found.
+
+  /recommend_er:
+    post:
+      summary: Recommend an emergency room
+      description: Provides emergency room recommendations based on user conditions and location.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                conditions:
+                  type: array
+                  items:
+                    type: string
+                lat:
+                  type: number
+                  format: float
+                lon:
+                  type: number
+                  format: float
+                basic_info:
+                  type: object
+      responses:
+        "200":
+          description: List of recommended emergency rooms.
+        "400":
+          description: Invalid request.
+        "404":
+          description: No emergency rooms found.
+
+  /process_symptoms:
+    post:
+      summary: Process symptoms
+      description: Analyzes symptoms and returns medical information, potential diseases, and checklists.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                symptoms:
+                  type: array
+                  items:
+                    type: string
+                language:
+                  type: string
+      responses:
+        "200":
+          description: Processed medical information.
+        "400":
+          description: Invalid request.
+
+  /geocode/address_to_coords:
+    post:
+      summary: Convert address to coordinates
+      description: Returns latitude and longitude for a given address.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+      responses:
+        "200":
+          description: Coordinates retrieved successfully.
+        "400":
+          description: Invalid request.
+
+  /geocode/coords_to_address:
+    post:
+      summary: Convert coordinates to address
+      description: Returns address for a given latitude and longitude.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lat:
+                  type: number
+                  format: float
+                lon:
+                  type: number
+                  format: float
+      responses:
+        "200":
+          description: Address retrieved successfully.
+        "400":
+          description: Invalid request.

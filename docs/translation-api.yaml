@@ -1,0 +1,166 @@
+openapi: 3.0.0
+info:
+  title: Translation API
+  description: API for real-time translation of speech-to-text and text-to-speech processing.
+  version: 1.0.0
+servers:
+  - url: https://your-api-server.com
+    description: Production server
+
+paths:
+  /start_session:
+    post:
+      summary: Start a new translation session
+      description: Creates a session for real-time speech translation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  description: Unique identifier for the user.
+      responses:
+        "201":
+          description: Session started successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  session_id:
+                    type: string
+                  main_language:
+                    type: string
+                  detected_languages:
+                    type: array
+                    items:
+                      type: string
+        "400":
+          description: user_id is required.
+
+  /audio_chunk:
+    post:
+      summary: Process an audio chunk
+      description: Processes a base64-encoded audio chunk, transcribes it, translates it, and generates TTS.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                  description: Session identifier.
+                audio:
+                  type: string
+                  format: byte
+                  description: Base64-encoded audio data.
+      responses:
+        "200":
+          description: Audio processed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  session_id:
+                    type: string
+                  transcript:
+                    type: string
+                  translations:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        text:
+                          type: string
+                        tts_url:
+                          type: string
+                  detected_languages:
+                    type: array
+                    items:
+                      type: string
+        "400":
+          description: session_id and audio are required.
+        "404":
+          description: Session not found.
+
+  /end_session:
+    post:
+      summary: End a translation session
+      description: Marks the session as ended.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                  description: Session identifier.
+      responses:
+        "200":
+          description: Session ended successfully.
+        "400":
+          description: session_id is required.
+        "404":
+          description: Session not found.
+
+  /get_transcripts/{session_id}:
+    get:
+      summary: Get session transcripts
+      description: Retrieves the transcripts of a specific session.
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Transcripts retrieved successfully.
+        "404":
+          description: Session not found.
+
+  /get_sessions/{user_id}:
+    get:
+      summary: Get sessions for a user
+      description: Retrieves all sessions of a user sorted by creation time.
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of user sessions.
+        "404":
+          description: No sessions found.
+
+  /session_summary/{session_id}:
+    get:
+      summary: Get session summary
+      description: Summarizes the transcript from a session.
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Summary generated successfully.
+        "404":
+          description: Session not found.
+        "500":
+          description: Failed to parse summary.

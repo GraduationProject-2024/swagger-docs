@@ -16,7 +16,7 @@
       <option value="docs/119reporting-api.yaml">119 Reporting API</option>
       <option value="docs/translation-api.yaml">Translation API</option>
       <option value="docs/recommender-api.yaml">Recommender API</option>
-      <option value="docs/backend-api.yaml">Backend API</option>
+      <!-- <option value="docs/backend-api.yaml">Backend API</option> -->
     </select>
 
     <div id="swagger-ui"></div>
@@ -25,7 +25,8 @@
     <script>
       function loadSwaggerUI(apiUrl) {
         const ui = SwaggerUIBundle({
-          url: apiUrl,
+          url:
+            "https://graduationproject-2024.github.io/swagger-docs/" + apiUrl,
           dom_id: "#swagger-ui",
         });
       }
